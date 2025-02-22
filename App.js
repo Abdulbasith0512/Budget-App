@@ -17,6 +17,7 @@ import NotificationsScreen from "./screens/NotificationsScreen";
 
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
+import FireScreen from "./screens/FireScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -49,7 +50,10 @@ function BottomTabs() {
                         iconName = "layers";
                     } else if (route.name === "Profile") {
                         iconName = "user";
+                    } else if (route.name === "Fire") {
+                        iconName = "fire";
                     }
+
                     return <Icon name={iconName} size={size} color={color} />;
                 },
                 tabBarShowLabel: false,
@@ -72,6 +76,7 @@ function BottomTabs() {
             <Tab.Screen name="Expenses" component={AddExpenseScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Ask ai" component={AIChatScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Profile" component={ProfileScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Fire" component={FireScreen} options={screenOptionsWithNotification} />
         </Tab.Navigator>
     );
 }
