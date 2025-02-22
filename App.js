@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -11,17 +11,30 @@ import HomeScreen from "./screens/HomeScreen";
 import ExpensesScreen from "./screens/ExpensesScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import AIChatScreen from "./screens/AIChatScreen";
-import ProfileScreen from "./screens/ProfileScreen"; // Add a Profile screen
+import ProfileScreen from "./screens/ProfileScreen";
+import NotificationsScreen from "./screens/NotificationsScreen"; // ✅ Import Notifications Screen
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+// ✅ Function to Add Notifications Button in the Header
+function screenOptionsWithNotification({ navigation }) {
+    return {
+        headerRight: () => (
+            <TouchableOpacity style={{ marginRight: 15 }} onPress={() => navigation.navigate("Notifications")}>
+                <Icon name="bell" size={24} color="black" />
+            </TouchableOpacity>
+        ),
+    };
+}
+
+// ✅ Bottom Tab Navigator with Notifications Button
 function BottomTabs() {
     return (
         <Tab.Navigator
-            screenOptions={({ route }) => ({
+            screenOptions={({ route, navigation }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName;
                     if (route.name === "Home") {
@@ -37,22 +50,26 @@ function BottomTabs() {
                     }
                     return <Icon name={iconName} size={size} color={color} />;
                 },
-                tabBarShowLabel: false, // Hide text labels
+                tabBarShowLabel: false,
                 tabBarStyle: {
-                    backgroundColor: "#DFF3E3", // Light green background
+                    backgroundColor: "#DFF3E3",
                     borderTopLeftRadius: 25,
                     borderTopRightRadius: 25,
                     position: "absolute",
                     height: 70,
                 },
-                tabBarIconStyle: { marginBottom: 5 },
+                headerRight: () => (
+                    <TouchableOpacity style={{ marginRight: 15 }} onPress={() => navigation.navigate("Notifications")}>
+                        <Icon name="bell" size={24} color="black" />
+                    </TouchableOpacity>
+                ),
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="Expenses" component={ExpensesScreen} />
-            <Tab.Screen name="Transactions" component={AddExpenseScreen} />
-            <Tab.Screen name="Layers" component={AIChatScreen} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Home" component={HomeScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Expenses" component={ExpensesScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Transactions" component={AddExpenseScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Layers" component={AIChatScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Profile" component={ProfileScreen} options={screenOptionsWithNotification} />
         </Tab.Navigator>
     );
 }
@@ -80,14 +97,19 @@ export default function App() {
 
     return (
         <NavigationContainer>
-            {user ? (
-                <BottomTabs /> // ✅ Display the bottom navigation when logged in
-            ) : (
-                <Stack.Navigator>
-                    <Stack.Screen name="Login" component={LoginScreen} />
-                    <Stack.Screen name="Signup" component={SignupScreen} />
-                </Stack.Navigator>
-            )}
+            <Stack.Navigator>
+                {user ? (
+                    <>
+                        <Stack.Screen name="Tabs" component={BottomTabs} options={{ headerShown: false }} />
+                        <Stack.Screen name="Notifications" component={NotificationsScreen} />
+                    </>
+                ) : (
+                    <>
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Signup" component={SignupScreen} />
+                    </>
+                )}
+            </Stack.Navigator>
         </NavigationContainer>
     );
 }
