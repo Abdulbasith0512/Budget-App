@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     },
     logo: {
         flexDirection: 'row',
-        marginTop: 0,
-        marginBottom: 100,
+        marginTop: 40,
+        marginBottom: 40,
     },
     logoText: {
         fontSize: 40,

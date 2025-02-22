@@ -23,19 +23,16 @@ export default function SignupScreen({ navigation }) {
     };
 
     return (
-        <>
-            {/* Top Section - Logo & Headings */}
+        <View style={styles.container}>
             <View style={styles.container2}>
                 <Text style={styles.logo}>
-                    NUT<Text style={styles.logoHighlight}>SHELL</Text>
+                    <Text style={styles.logoText}>NUT</Text>
+                    <Text style={[styles.logoText, styles.logoHighlight]}>SHELL</Text>
                 </Text>
-                
-
             </View>
             <Text style={styles.heading}>Join NUTSHELL Today!</Text>
             <Text style={styles.signupTitle}>Sign Up</Text>
 
-            {/* Bottom Section - Form & Buttons */}
             <View style={styles.container1}>
                 <TextInput style={styles.input} placeholder="Enter your full name" value={fullName} onChangeText={setFullName} />
                 <TextInput style={styles.input} placeholder="Enter your email" value={email} onChangeText={setEmail} />
@@ -47,8 +44,7 @@ export default function SignupScreen({ navigation }) {
                 </TouchableOpacity>
 
                 <Text style={styles.loginText}>
-                    Already have an account?{" "}
-                    <Text style={styles.loginLink} onPress={() => navigation.navigate("Login")}>
+                    Already have an account? <Text style={styles.loginLink} onPress={() => navigation.navigate("Login")}>
                         Log In
                     </Text>
                 </Text>
@@ -56,37 +52,45 @@ export default function SignupScreen({ navigation }) {
                 <Text style={styles.socialText}>Sign Up with socials</Text>
                 <View style={styles.socialButtons}>
                     <TouchableOpacity style={styles.socialButton}>
-                        <Image source={require("../assets/google.png")} style={styles.icon} />
+                        <Image source={require("../assets/googlegrey.png")} style={styles.icon} />
                     </TouchableOpacity>
                 </View>
 
                 <Text style={styles.termsText}>
-                    By signing up, you agree to our <Text style={styles.link}>Terms of Service</Text> and{" "}
-                    <Text style={styles.link}>Privacy Policy</Text>.
+                    By signing up, you agree to our <Text style={styles.link}>Terms of Service</Text> and <Text style={styles.link}>Privacy Policy</Text>.
                 </Text>
             </View>
-        </>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#FFFFFF",
+        padding: 20,
+    },
     container1: {
         alignItems: "center",
         flex: 1,
-        padding: 20,
+        width: "100%",
+        backgroundColor: "#FFFFFF"
     },
     container2: {
         alignItems: "flex-start",
         width: "100%",
         marginBottom: 20,
+        backgroundColor: "#FFFFFF"
     },
     logo: {
-        fontSize: 28,
-        fontWeight: "bold",
-        color: "#000",
+        flexDirection: 'row',
     },
     logoHighlight: {
-        color: "#f4a38c",
+        color: '#F1B695',
+    },
+    logoText: {
+        fontSize: 40,
+        fontWeight: "bold",
     },
     heading: {
         fontSize: 16,
@@ -94,13 +98,13 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     signupTitle: {
-        fontSize: 30,
+        fontSize: 40,
         fontWeight: "bold",
         marginVertical: 10,
     },
     input: {
         width: "100%",
-        backgroundColor: "#f2f2f2",
+        backgroundColor: "#FFFFFF",
         padding: 12,
         borderRadius: 5,
         marginVertical: 8,

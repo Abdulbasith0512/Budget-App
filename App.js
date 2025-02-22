@@ -45,7 +45,7 @@ function BottomTabs() {
                         iconName = "bar-chart";
                     } else if (route.name === "Transactions") {
                         iconName = "repeat";
-                    } else if (route.name === "Layers") {
+                    } else if (route.name === "Ask ai") {
                         iconName = "layers";
                     } else if (route.name === "Profile") {
                         iconName = "user";
@@ -70,7 +70,7 @@ function BottomTabs() {
             <Tab.Screen name="Home" component={HomeScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Expenses" component={ExpensesScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Transactions" component={AddExpenseScreen} options={screenOptionsWithNotification} />
-            <Tab.Screen name="Layers" component={AIChatScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Ask ai" component={AIChatScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Profile" component={ProfileScreen} options={screenOptionsWithNotification} />
         </Tab.Navigator>
     );
