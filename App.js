@@ -18,6 +18,7 @@ export default function App() {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
+            console.log("Auth state changed:", user); // Debugging
             setUser(user);
             setLoading(false);
         });
@@ -29,7 +30,7 @@ export default function App() {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Loading...</Text>
+                <Text>Loading App...</Text>
             </View>
         );
     }
