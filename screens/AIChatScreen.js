@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         position: 'absolute',
-        bottom: 30,
+        bottom: 80, // Increase bottom margin to stay above navigation
         left: 20,
         right: 20,
         flexDirection: 'row',
@@ -390,6 +390,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
+        zIndex: 1000, // Ensure input stays on top
     },
     iconButton: {
         padding: 8,
