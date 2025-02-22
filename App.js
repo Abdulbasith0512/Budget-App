@@ -68,8 +68,8 @@ function BottomTabs() {
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} options={screenOptionsWithNotification} />
-            <Tab.Screen name="Expenses" component={ExpensesScreen} options={screenOptionsWithNotification} />
-            <Tab.Screen name="Transactions" component={AddExpenseScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Transactions" component={ExpensesScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Expenses" component={AddExpenseScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Ask ai" component={AIChatScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Profile" component={ProfileScreen} options={screenOptionsWithNotification} />
         </Tab.Navigator>
