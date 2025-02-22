@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Button, Alert } from "react-native";
 import { fetchExpenses } from "../services/api";
 import { auth } from "../config/firebase";
+import CardComponents from "../components/cardComponets";
 
 export default function HomeScreen({ navigation }) {
     const [expenses, setExpenses] = useState([]);
@@ -19,7 +20,7 @@ export default function HomeScreen({ navigation }) {
         return unsubscribe;
     }, []);
 
-    const loadExpenses = async () => {
+    /*const loadExpenses = async () => {
         try {
             setLoading(true);
             const data = await fetchExpenses();
@@ -38,22 +39,12 @@ export default function HomeScreen({ navigation }) {
         } finally {
             setLoading(false);
         }
-    };
+    };*/
 
     return (
         <View>
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>Your Expenses</Text>
-            {loading ? <Text>Loading...</Text> : (
-                <FlatList
-                    data={expenses}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <View>
-                            <Text>{item.description} - ₹{item.amount} ({item.category})</Text>
-                        </View>
-                    )}
-                />
-            )}
+            
+            <CardComponents />
             <Button title="Add Expense" onPress={() => navigation.navigate("AddExpense")} />
             <Button title="Ask AI" onPress={() => navigation.navigate("AIChat")} />
             <Button title="Logout" onPress={() => auth.signOut()} />

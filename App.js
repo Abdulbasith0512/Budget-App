@@ -12,7 +12,9 @@ import ExpensesScreen from "./screens/ExpensesScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import AIChatScreen from "./screens/AIChatScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import NotificationsScreen from "./screens/NotificationsScreen"; // ✅ Import Notifications Screen
+
+import NotificationsScreen from "./screens/NotificationsScreen"; 
+
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 
