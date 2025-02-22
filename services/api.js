@@ -1,8 +1,12 @@
 import axios from "axios";
 import { auth } from "../config/firebase";
+import { Platform } from "react-native";
 
-const API_URL = "http://localhost:5001/api";  // Change if backend is deployed
 
+const API_URL =
+  Platform.OS === "android"
+    ? "http://192.168.0.7:5001/api"//andriod emulator
+    : "http://localhost:5001/api"; // iOS Simulator / Web
 // Function to get the Firebase Auth Token
 const getAuthToken = async () => {
     const user = auth.currentUser;
