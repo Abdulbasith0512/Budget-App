@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button,TouchableOpacity, Alert,StyleSheet } from "react-native";
-import { auth, signInWithEmailAndPassword, signInWithPopup, googleProvider } from "../config/firebase";
+import { View, Text, TextInput, Button, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase"; // Firebase config file
+
+WebBrowser.maybeCompleteAuthSession(); // Required for Web
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+        clientId: "436010534471-1qfjnd9tjklcn8qs3hujg9tadddia9br.apps.googleusercontent.com",
+    });
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -16,6 +25,7 @@ export default function LoginScreen({ navigation }) {
     const handleLogin = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
+            auth.currentUser.getIdToken().then(token => console.log(token));
         } catch (error) {
             Alert.alert("Error", error.message);
         }
@@ -23,21 +33,23 @@ export default function LoginScreen({ navigation }) {
 
     const handleGoogleLogin = async () => {
         try {
-            await signInWithPopup(auth, googleProvider);
+            await promptAsync();
         } catch (error) {
             Alert.alert("Error", error.message);
         }
     };
 
+    useEffect(() => {
+        if (response?.type === "success") {
+            const { id_token } = response.params;
+            const credential = GoogleAuthProvider.credential(id_token);
+            signInWithCredential(auth, credential)
+                .then(() => navigation.replace("Home"))
+                .catch((error) => Alert.alert("Error", error.message));
+        }
+    }, [response]);
+
     return (
-        /*<View>
-            <Text style={{ fontSize: 20 }}>Login</Text>
-            <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
-            <TextInput placeholder="Password" value={password} secureTextEntry onChangeText={setPassword} />
-            <Button title="Login" onPress={handleLogin} />
-            <Button title="Sign in with Google" onPress={handleGoogleLogin} />
-            <Button title="Signup" onPress={() => navigation.navigate("Signup")} />
-        </View>*/
         <View style={styles.container}>
             {/* Logo */}
             <View style={styles.logo}>
@@ -93,13 +105,12 @@ export default function LoginScreen({ navigation }) {
                     <Text>Google</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.socialButton}>
-                    <Text>facebook</Text>
+                    <Text>Facebook</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {
