@@ -18,6 +18,7 @@ import NotificationsScreen from "./screens/NotificationsScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import FireScreen from "./screens/FireScreen";
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,7 +51,7 @@ function screenOptionsWithNotification({ navigation, route }) {
 
 const getHeaderIcon = (routeName) => ({
     Home: "home",
-    Transactions: "activity",
+    "Expenses Analytics": "pie-chart",
     Expenses: "credit-card",
     "Ask AI": "cpu",
     Profile: "user",
@@ -69,8 +70,8 @@ function BottomTabs() {
                         iconName = "home";
                     } else if (route.name === "Expenses") {
                         iconName = "credit-card";
-                    } else if (route.name === "Transactions") {
-                        iconName = "repeat";
+                    } else if (route.name === "Expenses Analytics") {
+                        iconName = "pie-chart";
                     } else if (route.name === "Ask ai") {
                         iconName = "message-circle";
                     } else if (route.name === "Profile") {
@@ -108,7 +109,7 @@ function BottomTabs() {
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} options={screenOptionsWithNotification} />
-            <Tab.Screen name="Transactions" component={ExpensesScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Expenses Analytics" component={ExpensesScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Expenses" component={AddExpenseScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Ask ai" component={AIChatScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Profile" component={ProfileScreen} options={screenOptionsWithNotification} />
@@ -141,20 +142,57 @@ export default function App() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                {user ? (
-                    <>
-                        <Stack.Screen name="Tabs" component={BottomTabs} options={{ headerShown: false }} />
-                        <Stack.Screen name="Notifications" component={NotificationsScreen} />
-                    </>
-                ) : (
-                    <>
-                        <Stack.Screen name="Login" component={LoginScreen} />
-                        <Stack.Screen name="Signup" component={SignupScreen} />
-                    </>
-                )}
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#0F172A',
+                    elevation: 0, // Android
+                    shadowOpacity: 0, // iOS
+                },
+                headerTintColor: '#6EE7B7',
+                headerTitleStyle: {
+                    color: '#F8FAFC',
+                    fontSize: wp('5%'),
+                    fontWeight: '600',
+                },
+                cardStyle: { backgroundColor: '#0F172A' },
+            }}
+        >
+            {user ? (
+                <>
+                    <Stack.Screen 
+                        name="Tabs" 
+                        component={BottomTabs} 
+                        options={{ headerShown: false }} 
+                    />
+                    <Stack.Screen 
+                        name="Notifications" 
+                        component={NotificationsScreen}
+                        options={{
+                            headerBackTitleVisible: false,
+                            headerTitleAlign: 'center',
+                        }} 
+                    />
+                </>
+            ) : (
+                <>
+                    <Stack.Screen 
+                        name="Login" 
+                        component={LoginScreen}
+                       
+                    />
+                    <Stack.Screen 
+                        name="Signup" 
+                        component={SignupScreen}
+                        options={{
+                           
+                            headerTintColor: '#6EE7B7',
+                        }} 
+                    />
+                </>
+            )}
+        </Stack.Navigator>
+    </NavigationContainer>
     );
 }
 
@@ -206,6 +244,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginLeft: 16,
+       
     },
     headerTitle: {
         color: "#F8FAFC",

@@ -420,10 +420,6 @@ const styles = StyleSheet.create({
         color: '#6EE7B7',
         fontWeight: '500',
     },
-});
-
-// Enhanced tablet and desktop styles
-const tabletStyles = StyleSheet.create({
     '@media (min-width: 768px)': {
         content: {
             paddingHorizontal: wp('10%'),

@@ -329,10 +329,6 @@ const styles = StyleSheet.create({
         fontSize: wp('4%'),
         color: '#666',
     },
-});
-
-// Add tablet and desktop styles
-const tabletStyles = StyleSheet.create({
     '@media (min-width: 768px)': {
         card: {
             width: wp('80%'),
@@ -364,3 +360,4 @@ const tabletStyles = StyleSheet.create({
         },
     },
 });
+

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback,useRef } from "react";
 import { 
     View, 
     Text, 
@@ -9,7 +9,10 @@ import {
     ActivityIndicator, 
     TouchableOpacity,
     Dimensions,
-    Platform 
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    Animated
 } from "react-native";
 import { fetchExpenses } from "../services/api";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -19,12 +22,55 @@ const scale = width / 375;
 
 const normalize = (size) => Math.round(scale * size);
 
+const getFinancialHealthMessage = (income, expenses, balance) => {
+    // Calculate expense to income ratio
+    const expenseRatio = expenses / income;
+    
+    // Calculate savings ratio
+    const savingsRatio = balance / income;
+
+    if (income === 0) {
+        return {
+            message: "Please add your income to see your financial health",
+            color: "#8F90A6"
+        };
+    }
+
+    // High risk conditions
+    if (expenseRatio >= 0.9) {
+        return {
+            message: "Warning: Your expenses are very close to your income!",
+            color: "#FF6B6B"
+        };
+    }
+
+    // Moderate risk conditions
+    if (expenseRatio >= 0.7) {
+        return {
+            message: "Consider reducing your expenses to improve savings",
+            color: "#FFB86C"
+        };
+    }
+
+    // Good financial health
+    if (savingsRatio >= 0.3) {
+        return {
+            message: "Excellent! You're maintaining healthy savings",
+            color: "#4ADE80"
+        };
+    }
+
+    // Default moderate condition
+    return {
+        message: "Your financial health is stable",
+        color: "#8F90A6"
+    };
+};
+
 const formatDate = (timestamp) => {
     if (timestamp?._seconds) {
         return new Date(timestamp._seconds * 1000).toLocaleString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-            month: "short",
+            month: "long",
             day: "numeric",
         });
     }
@@ -39,6 +85,8 @@ const categoryIcons = {
     Default: require("../assets/default.png"),
 };
 
+
+
 export default function CardComponents() {
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -47,10 +95,45 @@ export default function CardComponents() {
     const [totalExpenses, setTotalExpenses] = useState(0);
     const [totalIncome, setTotalIncome] = useState(0);
     const [balance, setBalance] = useState(0);
+    const [showAllTransactions, setShowAllTransactions] = useState(false);
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(100)).current;
+    const scaleAnim = useRef(new Animated.Value(0.8)).current;
+
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1200,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 1200,
+                useNativeDriver: true,
+            }),
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                friction: 6,
+                tension: 40,
+                useNativeDriver: true,
+            })
+        ]).start();
+    }, []);
+
 
     useEffect(() => {
         loadExpenses();
     }, []);
+
+    const getDisplayedTransactions = () => {
+        if (showAllTransactions) {
+            return expenses;
+        }
+        return expenses.slice(0, 3);
+    };
 
     const calculateTotals = (data) => {
         const totals = data.reduce((acc, item) => {
@@ -71,7 +154,7 @@ export default function CardComponents() {
             setError(null);
             setLoading(true);
             const data = await fetchExpenses();
-
+            
             if (!Array.isArray(data)) {
                 throw new Error("Invalid data format from API");
             }
@@ -96,24 +179,22 @@ export default function CardComponents() {
 
     const renderItem = ({ item }) => (
         <View style={styles.transactionCard}>
-            <View style={styles.iconContainer}>
+            <View style={[styles.iconContainer, { backgroundColor: item.amount < 0 ? '#2A2F4F' : '#1F3B4D' }]}>
                 <Image 
                     source={categoryIcons[item.category] || categoryIcons.Default} 
-                    style={styles.icon} 
+                    style={[styles.icon, { tintColor: item.amount < 0 ? '#FF6B6B' : '#4ADE80' }]} 
                 />
             </View>
             <View style={styles.transactionDetails}>
-                <View style={styles.transactionHeader}>
-                <Text style={styles.description}>{item.description}</Text>
-                    <Text style={[styles.amount, item.amount < 0 ? styles.expense : styles.income]}>
-                        {item.amount < 0 ? '-' : '+'}₹{Math.abs(item.amount).toLocaleString()}
-                    </Text>
-                </View>
-                <View style={styles.transactionFooter}>
-                    <Text style={styles.date}>{formatDate(item.date)}</Text>
-                    <Text style={styles.transactionTitle}>{item.category}</Text>
-                </View>
+                <Text style={styles.transactionTitle}>{item.description }</Text>
+                <Text style={styles.date}>{formatDate(item.date)}</Text>
             </View>
+            <View style={styles.amountContainer}>
+            <Text style={[styles.amount, item.amount < 0 ? styles.expense : styles.income]}>
+                {item.amount < 0 ? '-' : '+'}₹{Math.abs(item.amount).toLocaleString()}
+            </Text>
+            <Text style={styles.category}>{item.category}</Text>
+        </View>
         </View>
     );
 
@@ -128,169 +209,203 @@ export default function CardComponents() {
         );
     }
 
+    const healthStatus = getFinancialHealthMessage(totalIncome, totalExpenses, balance);
+
     return (
-        <View style={styles.container}>
-            {/* Balance Section */}
-            <View style={styles.balanceContainer}>
-                <Text style={styles.balanceLabel}>Account Balance</Text>
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#151729" />
+            
+            
+            <Animated.View style={[
+                styles.header,
+                {
+                    opacity: fadeAnim,
+                    transform: [{ translateY: slideAnim }]
+                }
+            ]}>
+                <Text style={styles.welcomeText}>Welcome Back</Text>
+                <Text style={styles.subTitle}>Financial Dashboard</Text>
+            </Animated.View>
+
+         
+            <Animated.View style={[
+                styles.balanceCard,
+                {
+                    opacity: fadeAnim,
+                    transform: [
+                        { scale: scaleAnim },
+                        { translateY: slideAnim }
+                    ]
+                }
+            ]}>
                 <View style={styles.balanceRow}>
-                    <Text style={styles.balanceAmount}>₹{balance.toLocaleString()}</Text>
-                </View>
-                
-                {/* Progress Bar */}
-                <View style={styles.progressBarContainer}>
-                    <View style={[styles.progressBar, { width: `${(totalExpenses/totalIncome) * 100}%` }]} />
-                </View>
-                
-                {/* Summary Cards */}
-                <View style={styles.summaryContainer}>
-                    <View style={styles.summaryCard}>
-                        <Text style={styles.summaryLabel}>Income</Text>
-                        <Text style={styles.summaryAmount}>₹{totalIncome.toLocaleString()}</Text>
+                    <View>
+                        <Text style={styles.balanceLabel}>Total Balance</Text>
+                        <Text style={styles.balanceAmount}>₹{balance.toLocaleString()}</Text>
                     </View>
-                    <View style={styles.summaryCard}>
-                        <Text style={styles.summaryLabel}>Expense</Text>
-                        <Text style={styles.summaryExpense}>₹{totalExpenses.toLocaleString()}</Text>
+                    <View>
+                        <Text style={styles.balanceLabel}>Total Expenses</Text>
+                        <Text style={styles.expenseAmount}>₹{totalExpenses.toLocaleString()}</Text>
                     </View>
                 </View>
-            </View>
+                <Text style={[styles.healthText, { color: healthStatus.color }]}>
+                    {healthStatus.message}
+                </Text>
+            </Animated.View>
 
-            {/* Transactions Section */}
-            <View style={styles.transactionsContainer}>
-                <View style={styles.transactionsHeader}>
-                    <Text style={styles.transactionsTitle}>Transactions</Text>
-                    <TouchableOpacity>
-                        <Text style={styles.seeAll}>See all</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {loading ? (
-                    <View style={styles.loadingContainer}>
-                        <ActivityIndicator size="large" color="#00B386" />
-                    </View>
-                ) : (
-                    <FlatList
-                        data={expenses}
-                        keyExtractor={(item) => item.id}
-                        renderItem={renderItem}
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        showsVerticalScrollIndicator={false}
-                        ListEmptyComponent={
-                            <Text style={styles.emptyText}>No transactions found</Text>
-                        }
-                    />
-                )}
-            </View>
+           
+            <Animated.View style={[
+    styles.transactionsContainer,
+    {
+        opacity: fadeAnim,
+        transform: [{ translateY: slideAnim }]
+    }
+]}>
+    <View style={styles.transactionHeader}>
+    <Text style={styles.sectionTitle}>
+        {showAllTransactions ? 'All Transactions' : 'Recent Transactions'}
+    </Text>
+    <TouchableOpacity 
+        onPress={() => setShowAllTransactions(!showAllTransactions)}
+        style={styles.seeAllButton}
+    >
+        <Text style={styles.seeAllText}>
+            {showAllTransactions ? 'Show Less' : 'See All'}
+        </Text>
+    </TouchableOpacity>
+</View>
+    
+    {loading ? (
+        <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#4ADE80" />
         </View>
+    ) : (
+        <FlatList
+            data={getDisplayedTransactions()}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+                <Text style={styles.emptyText}>No transactions found</Text>
+            }
+        />
+    )}
+</Animated.View>
+        </SafeAreaView>
+    
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
-    balanceContainer: {
-        backgroundColor: '#00B386',
-        padding: wp('5%'),
-        borderBottomLeftRadius: wp('6%'),
-        borderBottomRightRadius: wp('6%'),
-    },
-    balanceLabel: {
-        color: '#E0FFF7',
-        fontSize: wp('3.5%'),
-        marginBottom: hp('1%'),
-    },
-    balanceRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: hp('2.5%'),
-    },
-    balanceAmount: {
-        color: '#FFFFFF',
-        fontSize: wp('7%'),
-        fontWeight: '600',
-    },
-    progressBarContainer: {
-        height: hp('1%'),
-        backgroundColor: '#052224',
-        borderRadius: wp('1%'),
-        marginBottom: hp('2.5%'),
-    },
-    progressBar: {
-        height: '100%',
-        backgroundColor: '#FFFFFF',
-        borderRadius: wp('1%'),
-    },
-    summaryContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: hp('1.2%'),
-    },
-    summaryCard: {
-        backgroundColor: '#FFFFFF',
-        padding: wp('4%'),
-        borderRadius: wp('4%'),
-        width: '48%',
-    },
-    summaryLabel: {
-        color: '#666',
-        fontSize: wp('3.5%'),
-        marginBottom: hp('0.6%'),
-    },
-    summaryAmount: {
-        color: '#00B386',
-        fontSize: wp('4%'),
-        fontWeight: '600',
-    },
-    summaryExpense: {
-        color: '#FF6B6B',
-        fontSize: wp('4%'),
-        fontWeight: '600',
-    },
-    transactionsContainer: {
-        flex: 1,
-        padding: wp('5%'),
-    },
-    transactionsHeader: {
+    transactionHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: hp('2%'),
     },
-    transactionsTitle: {
-        fontSize: wp('4.5%'),
-        fontWeight: '600',
-        color: '#333',
+    seeAllButton: {
+        paddingVertical: hp('1%'),
+        paddingHorizontal: wp('3%'),
+        backgroundColor: '#1E2032',
+        borderRadius: wp('3%'),
+        borderWidth: 1,
+        borderColor: '#4ADE80',
     },
-    seeAll: {
-        color: '#00B386',
+    seeAllText: {
+        color: '#4ADE80',
         fontSize: wp('3.5%'),
+        fontWeight: '500',
+    },
+    amountContainer: {
+        alignItems: 'flex-end',
+        minWidth: wp('25%'), // Ensure consistent width
+        marginLeft: wp('2%'),
+    },
+    category: {
+        color: '#8F90A6',
+        fontSize: wp('3.5%'),
+    },
+    amount: {
+        fontSize: wp('4%'),
+        fontWeight: 'bold',
+        marginBottom: hp('0.5%'), // Add space between amount and category
+    },
+    healthText: {
+        fontSize: wp('3.5%'),
+        fontWeight: '500',
+        marginTop: hp('1%'),
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#151729',
+    },
+    header: {
+        padding: wp('5%'),
+        paddingTop: hp('2%'),
+    },
+    welcomeText: {
+        color: '#FFFFFF',
+        fontSize: wp('8%'),
+        fontWeight: 'bold',
+    },
+    subTitle: {
+        color: '#8F90A6',
+        fontSize: wp('4%'),
+        marginTop: hp('1%'),
+    },
+    balanceCard: {
+        margin: wp('5%'),
+        padding: wp('5%'),
+        backgroundColor: '#1E2032',
+        borderRadius: wp('5%'),
+    },
+    balanceRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: hp('2%'),
+    },
+    balanceLabel: {
+        color: '#8F90A6',
+        fontSize: wp('3.5%'),
+        marginBottom: hp('1%'),
+    },
+    balanceAmount: {
+        color: '#4ADE80',
+        fontSize: wp('6%'),
+        fontWeight: 'bold',
+    },
+    expenseAmount: {
+        color: '#FF6B6B',
+        fontSize: wp('6%'),
+        fontWeight: 'bold',
+    },
+    healthText: {
+        color: '#8F90A6',
+        fontSize: wp('3.5%'),
+    },
+    transactionsContainer: {
+        flex: 1,
+        padding: wp('5%'),
+    },
+    sectionTitle: {
+        color: '#FFFFFF',
+        fontSize: wp('6%'),
+        fontWeight: 'bold',
+        marginBottom: hp('2%'),
     },
     transactionCard: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        justifyContent: 'space-between', // Ensure proper spacing
+        backgroundColor: '#1E2032',
         padding: wp('4%'),
         borderRadius: wp('4%'),
-        marginBottom: hp('1.2%'),
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-            },
-            android: {
-                elevation: 3,
-            },
-        }),
+        marginBottom: hp('1.5%'),
     },
     iconContainer: {
-        backgroundColor: '#F0F6FF',
-        padding: wp('2.5%'),
+        padding: wp('3%'),
         borderRadius: wp('3%'),
         marginRight: wp('4%'),
     },
@@ -300,42 +415,27 @@ const styles = StyleSheet.create({
     },
     transactionDetails: {
         flex: 1,
-    },
-    transactionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: hp('0.6%'),
-    },
-    description: {
-        fontSize: wp('4%'),
-        fontWeight: '500',
-        color: '#333',
-        flex: 1,
         marginRight: wp('2%'),
     },
     transactionTitle: {
-        fontSize: wp('3%'),
-        fontWeight: '500',
-        color: '#666',
+        fontSize: wp('4%'),
+        fontWeight: '600',
+        color: '#FFFFFF',
+        marginBottom: hp('0.5%'),
     },
-    transactionFooter: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    date: {
+        color: '#8F90A6',
+        fontSize: wp('3.5%'),
     },
     amount: {
         fontSize: wp('4%'),
-        fontWeight: '600',
+        fontWeight: 'bold',
     },
     income: {
-        color: '#00B386',
+        color: '#4ADE80',
     },
     expense: {
         color: '#FF6B6B',
-    },
-    date: {
-        color: '#666',
-        fontSize: wp('3.5%'),
     },
     loadingContainer: {
         flex: 1,
@@ -347,6 +447,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: wp('5%'),
+        backgroundColor: '#151729',
     },
     errorText: {
         fontSize: wp('4%'),
@@ -355,49 +456,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     retryButton: {
-        backgroundColor: '#00B386',
+        backgroundColor: '#4ADE80',
         paddingVertical: hp('1.5%'),
         paddingHorizontal: wp('6%'),
         borderRadius: wp('2%'),
     },
     retryText: {
-        color: '#FFFFFF',
+        color: '#151729',
         fontSize: wp('4%'),
         fontWeight: '600',
     },
     emptyText: {
         textAlign: 'center',
         fontSize: wp('4%'),
-        color: '#666',
+        color: '#8F90A6',
         marginTop: hp('3%'),
-    },
-    '@media (min-width: 768px)': {
-        balanceAmount: {
-            fontSize: wp('6%'),
-        },
-        summaryCard: {
-            padding: wp('3%'),
-        },
-        transactionCard: {
-            maxWidth: wp('80%'),
-            alignSelf: 'center',
-        },
-        icon: {
-            width: wp('5%'),
-            height: wp('5%'),
-        },
-    },
-    '@media (min-width: 1024px)': {
-        balanceContainer: {
-            maxWidth: wp('80%'),
-            alignSelf: 'center',
-        },
-        transactionCard: {
-            maxWidth: wp('70%'),
-        },
-        summaryContainer: {
-            maxWidth: wp('80%'),
-            alignSelf: 'center',
-        },
     },
 });
