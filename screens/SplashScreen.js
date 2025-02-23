@@ -6,59 +6,67 @@ import {
     Animated,
     Dimensions,
     StatusBar,
-    Platform
+    Platform,
+    Image
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Feather } from '@expo/vector-icons';
+const { width, height } = Dimensions.get('window');
 
-const SplashScreen = ({ navigation }) => {
-    // Animation values
+const SplashScreen = ({ onAnimationComplete }) => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const scaleAnim = useRef(new Animated.Value(0.3)).current;
     const titleMoveAnim = useRef(new Animated.Value(50)).current;
-
+    
     useEffect(() => {
-        // Start animations
-        Animated.parallel([
-            Animated.timing(fadeAnim, {
-                toValue: 1,
-                duration: 1000,
-                useNativeDriver: true,
-            }),
-            Animated.spring(scaleAnim, {
-                toValue: 1,
-                friction: 4,
-                tension: 40,
-                useNativeDriver: true,
-            }),
-            Animated.timing(titleMoveAnim, {
-                toValue: 0,
-                duration: 1000,
-                useNativeDriver: true,
-            }),
-        ]).start();
+        const animationTimeout = setTimeout(() => {
+            Animated.parallel([
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+                Animated.spring(scaleAnim, {
+                    toValue: 1,
+                    friction: 4,
+                    tension: 40,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(titleMoveAnim, {
+                    toValue: 0,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                
+                setTimeout(() => {
+                    onAnimationComplete();
+                }, 1000); 
+            });
+        }, 500); 
 
-        // Navigate to main screen after delay
-        setTimeout(() => {
-            navigation.replace('Login');
-        }, 3000);
-    }, []);
+        return () => clearTimeout(animationTimeout);
+    }, [fadeAnim, scaleAnim, titleMoveAnim, onAnimationComplete]);
 
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
             
             <Animated.View style={[
-                styles.logoContainer,
-                {
-                    opacity: fadeAnim,
-                    transform: [{ scale: scaleAnim }]
-                }
-            ]}>
-                <View style={styles.iconCircle}>
-                    <Feather name="dollar-sign" size={wp('15%')} color="#6EE7B7" />
-                </View>
-            </Animated.View>
+    styles.logoContainer,
+    {
+        opacity: fadeAnim,
+        transform: [{ scale: scaleAnim }]
+    }
+]}>
+    <View style={[styles.iconCircle, { width: width * 0.5, height: width * 0.5 }]}>
+    <Image
+        source={require('../assets/LOGO.png')}
+        style={[styles.logo, { width: '120%', height: '120%' }]}
+        resizeMode="contain"
+    />
+</View>
+</Animated.View>
 
             <Animated.View style={[
                 styles.textContainer,
@@ -67,15 +75,49 @@ const SplashScreen = ({ navigation }) => {
                     transform: [{ translateY: titleMoveAnim }]
                 }
             ]}>
-                <Text style={styles.title}>Budgeting</Text>
-                <Text style={styles.subtitle}>For All</Text>
-                <Text style={styles.tagline}>Manage your finances wisely</Text>
+                <View style={styles.headerTitleContainer}>
+                            <Text style={styles.headerTextNut}>NUT</Text>
+                            <Animated.View>
+                                <Text style={styles.headerTextShell}>SHELL</Text>
+                            </Animated.View>
+                        </View>
+                
+                <Text style={styles.tagline}>Your Money, Your Mastery</Text>
             </Animated.View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    iconCircle: {
+        borderRadius: width * 0.25, // Ensures it remains a circle
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0', // Optional background
+    },
+    logo: {
+        alignSelf: 'center',
+    },
+    headerTitleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    headerTextNut: {
+        color: "#F8FAFC",
+        fontSize: wp('9%'),
+        fontWeight: "800",
+        letterSpacing: 1,
+    },
+    headerTextShell: {
+        fontSize: wp('9%'),
+        fontWeight: "800",
+        letterSpacing: 1,
+        color: '#6EE7B7',
+        textShadowColor: 'rgba(110, 231, 183, 0.3)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 10,
+    },
     container: {
         flex: 1,
         backgroundColor: '#0F172A',

@@ -118,6 +118,7 @@ function ProfileStackNavigator() {
 export default function App() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [splashComplete, setSplashComplete] = useState(false);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -128,12 +129,8 @@ export default function App() {
         return unsubscribe;
     }, []);
 
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#6EE7B7" />
-            </View>
-        );
+    if (loading || !splashComplete) {
+        return <SplashScreen onAnimationComplete={() => setSplashComplete(true)} />;
     }
 
     return (
@@ -142,8 +139,8 @@ export default function App() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: '#0F172A',
-                    elevation: 0, // Android
-                    shadowOpacity: 0, // iOS
+                    elevation: 0,
+                    shadowOpacity: 0,
                 },
                 headerTintColor: '#6EE7B7',
                 headerTitleStyle: {
@@ -154,7 +151,6 @@ export default function App() {
                 cardStyle: { backgroundColor: '#0F172A' },
             }}
         >
-           
             {user ? (
                 <>
                     <Stack.Screen 
@@ -176,13 +172,15 @@ export default function App() {
                     <Stack.Screen 
                         name="Login" 
                         component={LoginScreen}
-                       
+                        options={{ headerShown: false }}
                     />
                     <Stack.Screen 
                         name="Signup" 
                         component={SignupScreen}
                         options={{
-                           
+                            headerBackTitleVisible: false,
+                            headerTransparent: true,
+                            headerTitle: '',
                             headerTintColor: '#6EE7B7',
                         }} 
                     />
