@@ -13,7 +13,9 @@ import ExpensesScreen from "./screens/ExpensesScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import AIChatScreen from "./screens/AIChatScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import NotificationsScreen from "./screens/NotificationsScreen";
+import SplashScreen from './screens/SplashScreen';
+import NotificationsScreen from "./screens/NotificationsScreen"; 
+
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import FireScreen from "./screens/FireScreen";
@@ -116,6 +118,7 @@ function ProfileStackNavigator() {
 export default function App() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [splashComplete, setSplashComplete] = useState(false);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -126,30 +129,65 @@ export default function App() {
         return unsubscribe;
     }, []);
 
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#6EE7B7" />
-            </View>
-        );
+    if (loading || !splashComplete) {
+        return <SplashScreen onAnimationComplete={() => setSplashComplete(true)} />;
     }
 
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                {user ? (
-                    <>
-                        <Stack.Screen name="Tabs" component={BottomTabs} options={{ headerShown: false }} />
-                        <Stack.Screen name="Notifications" component={NotificationsScreen} />
-                    </>
-                ) : (
-                    <>
-                        <Stack.Screen name="Login" component={LoginScreen} />
-                        <Stack.Screen name="Signup" component={SignupScreen} />
-                    </>
-                )}
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#0F172A',
+                    elevation: 0,
+                    shadowOpacity: 0,
+                },
+                headerTintColor: '#6EE7B7',
+                headerTitleStyle: {
+                    color: '#F8FAFC',
+                    fontSize: wp('5%'),
+                    fontWeight: '600',
+                },
+                cardStyle: { backgroundColor: '#0F172A' },
+            }}
+        >
+            {user ? (
+                <>
+                    <Stack.Screen 
+                        name="Tabs" 
+                        component={BottomTabs} 
+                        options={{ headerShown: false }} 
+                    />
+                    <Stack.Screen 
+                        name="Notifications" 
+                        component={NotificationsScreen}
+                        options={{
+                            headerBackTitleVisible: false,
+                            headerTitleAlign: 'center',
+                        }} 
+                    />
+                </>
+            ) : (
+                <>
+                    <Stack.Screen 
+                        name="Login" 
+                        component={LoginScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen 
+                        name="Signup" 
+                        component={SignupScreen}
+                        options={{
+                            headerBackTitleVisible: false,
+                            headerTransparent: true,
+                            headerTitle: '',
+                            headerTintColor: '#6EE7B7',
+                        }} 
+                    />
+                </>
+            )}
+        </Stack.Navigator>
+    </NavigationContainer>
     );
 }
 
