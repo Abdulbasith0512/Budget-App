@@ -10,10 +10,26 @@ import {
   SafeAreaView,
   ActivityIndicator,
   ScrollView,
+  Dimensions,
+  Platform,
 } from "react-native";
 import { getFinancialAdvice } from "../services/api";
 import Markdown from "react-native-markdown-display";
-
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+const {height, width} = Dimensions.get('window');
+const isIphoneX = () => {
+  const dimen = Dimensions.get('window');
+  return (
+      Platform.OS === 'ios' &&
+      !Platform.isPad &&
+      !Platform.isTVOS &&
+      ((dimen.height === 780 || dimen.width === 780)
+      || (dimen.height === 812 || dimen.width === 812)
+      || (dimen.height === 844 || dimen.width === 844)
+      || (dimen.height === 896 || dimen.width === 896)
+      || (dimen.height === 926 || dimen.width === 926))
+  );
+};
 const MessageType = {
   QUESTION: "question",
   RESPONSE: "response",
@@ -194,209 +210,229 @@ export default function AIChatScreen() {
 
 const markdownStyles = {
   body: {
-    color: "#333",
-    fontSize: 16,
-    flex: 1,
+      color: '#333',
+      fontSize: wp('4%'),
+      flex: 1,
   },
   heading1: {
-    fontSize: 24,
-    color: "#1976D2",
-    fontWeight: "bold",
-    marginVertical: 10,
+      fontSize: wp('6%'),
+      color: '#1976D2',
+      fontWeight: 'bold',
+      marginVertical: hp('1.5%'),
   },
   heading2: {
-    fontSize: 20,
-    color: "#1976D2",
-    fontWeight: "bold",
-    marginVertical: 8,
+      fontSize: wp('5%'),
+      color: '#1976D2',
+      fontWeight: 'bold',
+      marginVertical: hp('1%'),
   },
   paragraph: {
-    fontSize: 16,
-    lineHeight: 22,
-    marginVertical: 8,
-    flexwrap: "wrap",
+      fontSize: wp('4%'),
+      lineHeight: hp('3%'),
+      marginVertical: hp('1%'),
+      flexWrap: 'wrap',
   },
   list: {
-    marginVertical: 8,
+      marginVertical: hp('1%'),
   },
   listItem: {
-    marginVertical: 4,
+      marginVertical: hp('0.5%'),
   },
   listUnorderedItemIcon: {
-    fontSize: 16,
-    color: "#1976D2",
+      fontSize: wp('4%'),
+      color: '#1976D2',
   },
   code_inline: {
-    backgroundColor: "#f5f5f5",
-    padding: 4,
-    borderRadius: 4,
-    fontFamily: "monospace",
+      backgroundColor: '#f5f5f5',
+      padding: wp('1%'),
+      borderRadius: wp('1%'),
+      fontFamily: 'monospace',
   },
   code_block: {
-    backgroundColor: "#f5f5f5",
-    padding: 10,
-    borderRadius: 8,
-    fontFamily: "monospace",
-    marginVertical: 8,
+      backgroundColor: '#f5f5f5',
+      padding: wp('2.5%'),
+      borderRadius: wp('2%'),
+      fontFamily: 'monospace',
+      marginVertical: hp('1%'),
   },
   blockquote: {
-    borderLeftWidth: 4,
-    borderLeftColor: "#1976D2",
-    paddingLeft: 10,
-    marginLeft: 10,
-    marginVertical: 8,
+      borderLeftWidth: 4,
+      borderLeftColor: '#1976D2',
+      paddingLeft: wp('2.5%'),
+      marginLeft: wp('2.5%'),
+      marginVertical: hp('1%'),
   },
 };
 
 const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      backgroundColor: '#F0F8FF',
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      paddingBottom: isIphoneX() ? 34 : 0,
+  },
   scrollContainer: {
-    flex: 1,
-    width: "100%",
+      flex: 1,
+      width: '100%',
   },
-  responseScroll: {
-    maxHeight: 300,
-    marginVertical: 5,
-  },
-
   scrollContentContainer: {
     flexGrow: 1,
-    paddingBottom: 90,
-  },
-
-  bottomPadding: {
-    height: 60,
-  },
-  messageContainer: {
-    marginVertical: 8,
-    marginHorizontal: 10,
-    width: "80%",
-  },
-
-  questionContainer: {
-    backgroundColor: "#E3F2FD",
-    padding: 15,
-    borderRadius: 15,
-    alignSelf: "flex-end",
-    maxWidth: "80%",
-  },
-
-  responseContainer: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 15,
-    alignSelf: "flex-start",
-    maxWidth: "80%",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-
-  questionText: {
-    fontSize: 16,
-    color: "#1976D2",
-    fontWeight: "500",
-  },
-
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 100,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: "#666",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#F0F8FF",
-    padding: 20,
-  },
+    paddingBottom: hp('20%'), 
+    paddingHorizontal: wp('4%'),
+},
   header: {
-    marginTop: 20,
-    marginBottom: 40,
-    marginHorizontal: 100,
+      marginTop: hp('2%'),
+      marginBottom: hp('4%'),
+      paddingHorizontal: wp('4%'),
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 8,
+      fontSize: wp('7%'),
+      fontWeight: 'bold',
+      marginBottom: hp('1%'),
+      color: '#1976D2',
   },
   subtitle: {
-    color: "#666",
-    fontSize: 12,
-    marginTop: 5,
+      color: '#666',
+      fontSize: wp('3%'),
   },
   suggestionsContainer: {
-    gap: 10,
-    marginBottom: 20,
+      gap: hp('1.5%'),
+      marginBottom: hp('3%'),
   },
   suggestionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'white',
+      padding: wp('4%'),
+      borderRadius: wp('5%'),
+      shadowColor: '#000',
+      shadowOffset: {
+          width: 0,
+          height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
   },
   suggestionIcon: {
-    marginRight: 10,
-    fontSize: 16,
+      marginRight: wp('2%'),
+      fontSize: wp('4%'),
   },
   suggestionText: {
-    fontSize: 16,
-    color: "#333",
+      fontSize: wp('4%'),
+      color: '#333',
+  },
+  messageContainer: {
+      marginVertical: hp('1%'),
+      marginHorizontal: wp('2%'),
+      maxWidth: wp('80%'),
+  },
+  questionContainer: {
+      backgroundColor: '#E3F2FD',
+      padding: wp('4%'),
+      borderRadius: wp('4%'),
+      alignSelf: 'flex-end',
+  },
+  responseContainer: {
+      backgroundColor: 'white',
+      padding: wp('4%'),
+      borderRadius: wp('4%'),
+      alignSelf: 'flex-start',
+      shadowColor: '#000',
+      shadowOffset: {
+          width: 0,
+          height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+  },
+  questionText: {
+      fontSize: wp('4%'),
+      color: '#1976D2',
+      fontWeight: '500',
+  },
+  responseScroll: {
+      maxHeight: hp('40%'),
+      marginVertical: hp('1%'),
   },
   inputContainer: {
-    position: "absolute",
-    bottom: 80, // Increase bottom margin to stay above navigation
-    left: 20,
-    right: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 25,
-    shadowColor: "#000",
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? hp('10%') : hp('12%'), 
+    left: wp('4%'),
+    right: wp('4%'),
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: wp('3%'),
+    borderRadius: wp('6%'),
+    shadowColor: '#000',
     shadowOffset: {
-      width: 0,
-      height: 2,
+        width: 0,
+        height: 2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    zIndex: 1000, // Ensure input stays on top
+    zIndex: 1000,
+},
+  input: {
+      flex: 1,
+      fontSize: wp('4%'),
+      marginHorizontal: wp('2%'),
+      color: '#333',
   },
   iconButton: {
-    padding: 8,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    marginHorizontal: 10,
-    color: "#333",
+      padding: wp('2%'),
   },
   sendButton: {
-    padding: 8,
+      padding: wp('2%'),
   },
+  loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: hp('12%'),
+  },
+  loadingText: {
+      marginTop: hp('1%'),
+      fontSize: wp('4%'),
+      color: '#666',
+  },
+  bottomPadding: {
+    height: hp('15%'), 
+},
+});
 
-  responseText: {
-    fontSize: 16,
-    color: "#333",
-    lineHeight: 22,
-    textAlign: "left",
+
+const tabletStyles = StyleSheet.create({
+  '@media (min-width: 768px)': {
+      container: {
+          maxWidth: wp('80%'),
+          alignSelf: 'center',
+      },
+      title: {
+          fontSize: wp('5%'),
+      },
+      messageContainer: {
+          maxWidth: wp('60%'),
+      },
+      inputContainer: {
+        maxWidth: wp('80%'),
+        alignSelf: 'center',
+        bottom: hp('12%'), // Adjusted for tablets
+    },
+  },
+  '@media (min-width: 1024px)': {
+      container: {
+          maxWidth: wp('70%'),
+      },
+      messageContainer: {
+          maxWidth: wp('50%'),
+      },
+      inputContainer: {
+        maxWidth: wp('70%'),
+        bottom: hp('12%'), // Adjusted for desktop
+    },
   },
 });

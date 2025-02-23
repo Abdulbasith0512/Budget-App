@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Button, Alert } from "react-native";
-import { fetchExpenses } from "../services/api";
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    TouchableOpacity, 
+    SafeAreaView ,
+    
+} from "react-native";
 import { auth } from "../config/firebase";
 import CardComponents from "../components/cardComponets";
 
 export default function HomeScreen({ navigation }) {
-    const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -13,41 +18,67 @@ export default function HomeScreen({ navigation }) {
             if (!user) {
                 navigation.replace("Login");
             } else {
-                loadExpenses();
+                setLoading(false);
             }
         });
 
         return unsubscribe;
     }, []);
 
-    /*const loadExpenses = async () => {
-        try {
-            setLoading(true);
-            const data = await fetchExpenses();
-            console.log("Fetched Expenses from API:", data); // Debugging
-
-            if (!Array.isArray(data)) {
-                console.error("API did not return an array:", data);
-                Alert.alert("Error", "Invalid data format from API");
-                return;
-            }
-
-            setExpenses(data);
-        } catch (error) {
-            console.error("Error fetching expenses:", error.message);
-            Alert.alert("Error", error.message);
-        } finally {
-            setLoading(false);
-        }
-    };*/
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
 
     return (
-        <View>
-            
-            <CardComponents />
-            <Button title="Add Expense" onPress={() => navigation.navigate("AddExpense")} />
-            <Button title="Ask AI" onPress={() => navigation.navigate("AIChat")} />
-            <Button title="Logout" onPress={() => auth.signOut()} />
-        </View>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.content}>
+                <CardComponents />
+                
+                
+            </View>
+        </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+        marginBottom: 60,
+    },
+    content: {
+        flex: 1,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonContainer: {
+        padding: 16,
+        gap: 12,
+    },
+    button: {
+        padding: 16,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    addButton: {
+        backgroundColor: '#4CAF50',
+    },
+    aiButton: {
+        backgroundColor: '#1976D2',
+    },
+    logoutButton: {
+        backgroundColor: '#dc3545',
+    }
+});
