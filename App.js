@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, ActivityIndicator, TouchableOpacity,StyleSheet,Text } from "react-native";
+import { View, ActivityIndicator, TouchableOpacity, StyleSheet, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { auth } from "./config/firebase";
 import Icon from "react-native-vector-icons/Feather";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 // Import Screens
 import HomeScreen from "./screens/HomeScreen";
@@ -12,13 +13,16 @@ import ExpensesScreen from "./screens/ExpensesScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import AIChatScreen from "./screens/AIChatScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-
-import NotificationsScreen from "./screens/NotificationsScreen"; 
-
+import NotificationsScreen from "./screens/NotificationsScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import FireScreen from "./screens/FireScreen";
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
+// New Profile Screens
+import EditProfileScreen from "./screens/EditProfileScreen";
+import SecurityScreen from "./screens/SecurityScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import HelpScreen from "./screens/HelpScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,14 +31,8 @@ const Tab = createBottomTabNavigator();
 function screenOptionsWithNotification({ navigation, route }) {
     return {
         headerRight: () => (
-            <TouchableOpacity 
-                style={styles.notificationBtn}
-                onPress={() => navigation.navigate("Notifications")}
-            >
-                <View style={styles.notificationIconContainer}>
-                    <Icon name="bell" size={22} color="#6EE7B7" />
-                    <View style={styles.notificationBadge} />
-                </View>
+            <TouchableOpacity style={styles.notificationBtn} onPress={() => navigation.navigate("Notifications")}>
+                <Icon name="bell" size={22} color="#6EE7B7" />
             </TouchableOpacity>
         ),
         headerLeft: () => (
@@ -44,7 +42,6 @@ function screenOptionsWithNotification({ navigation, route }) {
             </View>
         ),
         headerStyle: styles.header,
-        headerTitleStyle: styles.headerTitle,
         headerTitle: '',
     };
 }
@@ -66,30 +63,16 @@ function BottomTabs() {
             screenOptions={({ route, navigation }) => ({
                 tabBarIcon: ({ focused }) => {
                     let iconName;
-                    if (route.name === "Home") {
-                        iconName = "home";
-                    } else if (route.name === "Expenses") {
-                        iconName = "credit-card";
-                    } else if (route.name === "Expenses Analytics") {
-                        iconName = "pie-chart";
-                    } else if (route.name === "Ask ai") {
-                        iconName = "message-circle";
-                    } else if (route.name === "Profile") {
-                        iconName = "user";
-                    } else if (route.name === "Fire") {
-                        iconName = "trending-up";
-                    }
+                    if (route.name === "Home") iconName = "home";
+                    else if (route.name === "Expenses") iconName = "credit-card";
+                    else if (route.name === "Expenses Analytics") iconName = "pie-chart";
+                    else if (route.name === "Ask AI") iconName = "message-circle";
+                    else if (route.name === "Profile") iconName = "user";
+                    else if (route.name === "Fire") iconName = "trending-up";
 
                     return (
-                        <View style={[
-                            styles.tabIconWrapper,
-                            focused && styles.tabIconActive
-                        ]}>
-                            <Icon 
-                                name={iconName} 
-                                size={24} 
-                                color={focused ? "#6EE7B7" : "#94A3B8"} 
-                            />
+                        <View style={[styles.tabIconWrapper, focused && styles.tabIconActive]}>
+                            <Icon name={iconName} size={24} color={focused ? "#6EE7B7" : "#94A3B8"} />
                         </View>
                     );
                 },
@@ -105,16 +88,28 @@ function BottomTabs() {
                 tabBarLabelStyle: styles.tabBarLabel,
                 tabBarActiveTintColor: "#6EE7B7",
                 tabBarInactiveTintColor: "#94A3B8",
-                
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Expenses Analytics" component={ExpensesScreen} options={screenOptionsWithNotification} />
             <Tab.Screen name="Expenses" component={AddExpenseScreen} options={screenOptionsWithNotification} />
-            <Tab.Screen name="Ask ai" component={AIChatScreen} options={screenOptionsWithNotification} />
-            <Tab.Screen name="Profile" component={ProfileScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Ask AI" component={AIChatScreen} options={screenOptionsWithNotification} />
+            <Tab.Screen name="Profile" component={ProfileStackNavigator} options={{ headerShown: false }} />
             <Tab.Screen name="Fire" component={FireScreen} options={screenOptionsWithNotification} />
         </Tab.Navigator>
+    );
+}
+
+// ✅ Profile Stack Navigator (Includes Edit Profile, Security, etc.)
+function ProfileStackNavigator() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="Profile" component={ProfileScreen} options={screenOptionsWithNotification} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+            <Stack.Screen name="Security" component={SecurityScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="Help" component={HelpScreen} />
+        </Stack.Navigator>
     );
 }
 
@@ -124,75 +119,37 @@ export default function App() {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
-            console.log("Auth state changed:", user); // Debugging
+            console.log("Auth state changed:", user);
             setUser(user);
             setLoading(false);
         });
-
         return unsubscribe;
     }, []);
 
     if (loading) {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <ActivityIndicator size="large" color="#0000ff" />
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#6EE7B7" />
             </View>
         );
     }
 
     return (
         <NavigationContainer>
-        <Stack.Navigator
-            screenOptions={{
-                headerStyle: {
-                    backgroundColor: '#0F172A',
-                    elevation: 0, // Android
-                    shadowOpacity: 0, // iOS
-                },
-                headerTintColor: '#6EE7B7',
-                headerTitleStyle: {
-                    color: '#F8FAFC',
-                    fontSize: wp('5%'),
-                    fontWeight: '600',
-                },
-                cardStyle: { backgroundColor: '#0F172A' },
-            }}
-        >
-            {user ? (
-                <>
-                    <Stack.Screen 
-                        name="Tabs" 
-                        component={BottomTabs} 
-                        options={{ headerShown: false }} 
-                    />
-                    <Stack.Screen 
-                        name="Notifications" 
-                        component={NotificationsScreen}
-                        options={{
-                            headerBackTitleVisible: false,
-                            headerTitleAlign: 'center',
-                        }} 
-                    />
-                </>
-            ) : (
-                <>
-                    <Stack.Screen 
-                        name="Login" 
-                        component={LoginScreen}
-                       
-                    />
-                    <Stack.Screen 
-                        name="Signup" 
-                        component={SignupScreen}
-                        options={{
-                           
-                            headerTintColor: '#6EE7B7',
-                        }} 
-                    />
-                </>
-            )}
-        </Stack.Navigator>
-    </NavigationContainer>
+            <Stack.Navigator>
+                {user ? (
+                    <>
+                        <Stack.Screen name="Tabs" component={BottomTabs} options={{ headerShown: false }} />
+                        <Stack.Screen name="Notifications" component={NotificationsScreen} />
+                    </>
+                ) : (
+                    <>
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Signup" component={SignupScreen} />
+                    </>
+                )}
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
 
@@ -203,11 +160,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#0F172A",
     },
-    loadingText: {
-        color: "#94A3B8",
-        marginTop: 16,
-        fontSize: 16,
-    },
     tabBar: {
         backgroundColor: "#1E293B",
         borderTopWidth: 0,
@@ -216,10 +168,6 @@ const styles = StyleSheet.create({
         paddingTop: 12,
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
-        shadowColor: "#6EE7B7",
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
     },
     tabIconWrapper: {
         width: 48,
@@ -229,11 +177,11 @@ const styles = StyleSheet.create({
         borderRadius: 24,
     },
     tabIconActive: {
-        backgroundColor:"rgba(110, 231, 183, 0.66)",
+        backgroundColor: "rgba(110, 231, 183, 0.66)",
     },
     tabBarLabel: {
         fontSize: 12,
-        fontWeight: '500',
+        fontWeight: "500",
         marginTop: 7,
     },
     header: {
@@ -244,7 +192,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginLeft: 16,
-       
     },
     headerTitle: {
         color: "#F8FAFC",
@@ -256,18 +203,4 @@ const styles = StyleSheet.create({
         marginRight: 16,
         padding: 8,
     },
-    notificationIconContainer: {
-        position: "relative",
-    },
-    notificationBadge: {
-        position: "absolute",
-        right: -2,
-        top: -2,
-        backgroundColor: "#FB7185",
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: "#0F172A",
-    }
 });
