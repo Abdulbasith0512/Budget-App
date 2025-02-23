@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { 
     View, 
     Text, 
@@ -8,32 +8,22 @@ import {
     StyleSheet,
     SafeAreaView,
     StatusBar,
-    Dimensions
+    Platform
 } from "react-native";
 import { fetchExpenses } from "../services/api";
 import { auth } from "../config/firebase";
 import CardComponents from "../components/cardComponets";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 export default function ExpensesScreen({ navigation }) {
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
-    const { width, height } = Dimensions.get('window');
-    const [scale, setScale] = useState(width / 375);
+    
+    
 
-    const normalize = useCallback((size) => {
-        return Math.round(scale * size);
-    }, [scale]);
-
-    useEffect(() => {
-        const onChange = () => {
-            const { width } = Dimensions.get('window');
-            setScale(width / 375);
-        };
-
-        const subscription = Dimensions.addEventListener('change', onChange);
-        return () => subscription.remove();
-    }, []);
+   
 
     useEffect(() => {
         let isMounted = true;
@@ -93,24 +83,14 @@ export default function ExpensesScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            
+        <StatusBar barStyle="dark-content" />
+        
+        <View style={styles.content}>
+            <CardComponents expenses={expenses} />
+        </View>
 
-            <View style={styles.content}>
-                <CardComponents expenses={expenses} />
-            </View>
-
-            <TouchableOpacity 
-                style={[styles.button, { padding: normalize(15) }]}
-                onPress={() => navigation.goBack()}
-                accessibilityLabel="Go back to home screen"
-                accessibilityRole="button"
-            >
-                <Text style={[styles.buttonText, { fontSize: normalize(16) }]}>
-                    Back to Home
-                </Text>
-            </TouchableOpacity>
-        </SafeAreaView>
+        
+    </SafeAreaView>
     );
 }
 
@@ -118,31 +98,34 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F0F8FF',
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
     headerContainer: {
-        paddingHorizontal: 20,
+        paddingHorizontal: wp('5%'),
         alignItems: 'center',
     },
     header: {
-        marginTop: 20,
-        marginBottom: 40,
+        marginTop: hp('%'),
+        marginBottom: hp('%'),
         width: '100%',
-        maxWidth: 600,
+        maxWidth: wp('90%'),
     },
     title: {
+        fontSize: wp('5%'),
         fontWeight: 'bold',
-        marginBottom: 8,
+        marginBottom: hp('1%'),
         color: '#333',
     },
     subtitle: {
+        fontSize: wp('4%'),
         color: '#666',
     },
     content: {
         flex: 1,
-        marginBottom: 80,
-        paddingHorizontal: 20,
+        marginBottom: hp('10%'),
+        paddingHorizontal: wp('5%'),
         width: '100%',
-        maxWidth: 600,
+        maxWidth: wp('90%'),
         alignSelf: 'center',
     },
     loadingContainer: {
@@ -152,21 +135,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#F0F8FF',
     },
     loadingText: {
-        marginTop: 10,
+        marginTop: hp('1%'),
+        fontSize: wp('4%'),
         color: '#666',
     },
     button: {
         position: 'absolute',
-        bottom: '10%',
-        left: '5%',
-        right: '5%',
-        maxWidth: 500,
+        bottom: hp('10%'),
+        left: wp('5%'),
+        right: wp('5%'),
+        maxWidth: wp('90%'),
         alignSelf: 'center',
         backgroundColor: '#1976D2',
-        borderRadius: 25,
+        borderRadius: wp('6%'),
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: 44,
+        minHeight: hp('6%'),
+        padding: wp('4%'),
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -179,6 +164,32 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
+        fontSize: wp('4%'),
         fontWeight: '500',
-    }
+    },
+    '@media (min-width: 768px)': {
+        content: {
+            maxWidth: wp('80%'),
+        },
+        button: {
+            maxWidth: wp('60%'),
+            bottom: hp('8%'),
+        },
+        title: {
+            fontSize: wp('4%'),
+        },
+        subtitle: {
+            fontSize: wp('3%'),
+        },
+    },
+    '@media (min-width: 1024px)': {
+        content: {
+            maxWidth: wp('70%'),
+        },
+        button: {
+            maxWidth: wp('50%'),
+            bottom: hp('6%'),
+        },
+    },
 });
+

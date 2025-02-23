@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ActivityIndicator, TouchableOpacity } from "react-native";
+import { View, ActivityIndicator, TouchableOpacity,StyleSheet,Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -23,52 +23,88 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // ✅ Function to Add Notifications Button in the Header
-function screenOptionsWithNotification({ navigation }) {
+function screenOptionsWithNotification({ navigation, route }) {
     return {
         headerRight: () => (
-            <TouchableOpacity style={{ marginRight: 15 }} onPress={() => navigation.navigate("Notifications")}>
-                <Icon name="bell" size={24} color="black" />
+            <TouchableOpacity 
+                style={styles.notificationBtn}
+                onPress={() => navigation.navigate("Notifications")}
+            >
+                <View style={styles.notificationIconContainer}>
+                    <Icon name="bell" size={22} color="#6EE7B7" />
+                    <View style={styles.notificationBadge} />
+                </View>
             </TouchableOpacity>
         ),
+        headerLeft: () => (
+            <View style={styles.headerLeft}>
+                <Icon name={getHeaderIcon(route.name)} size={22} color="#6EE7B7" />
+                <Text style={styles.headerTitle}>{route.name}</Text>
+            </View>
+        ),
+        headerStyle: styles.header,
+        headerTitleStyle: styles.headerTitle,
+        headerTitle: '',
     };
 }
+
+const getHeaderIcon = (routeName) => ({
+    Home: "home",
+    Transactions: "activity",
+    Expenses: "credit-card",
+    "Ask AI": "cpu",
+    Profile: "user",
+    Fire: "trending-up",
+    Notifications: "bell"
+}[routeName] || "circle");
 
 // ✅ Bottom Tab Navigator with Notifications Button
 function BottomTabs() {
     return (
         <Tab.Navigator
             screenOptions={({ route, navigation }) => ({
-                tabBarIcon: ({ color, size }) => {
+                tabBarIcon: ({ focused }) => {
                     let iconName;
                     if (route.name === "Home") {
                         iconName = "home";
                     } else if (route.name === "Expenses") {
-                        iconName = "bar-chart";
+                        iconName = "credit-card";
                     } else if (route.name === "Transactions") {
                         iconName = "repeat";
                     } else if (route.name === "Ask ai") {
-                        iconName = "layers";
+                        iconName = "message-circle";
                     } else if (route.name === "Profile") {
                         iconName = "user";
                     } else if (route.name === "Fire") {
-                        iconName = "fire";
+                        iconName = "trending-up";
                     }
 
-                    return <Icon name={iconName} size={size} color={color} />;
+                    return (
+                        <View style={[
+                            styles.tabIconWrapper,
+                            focused && styles.tabIconActive
+                        ]}>
+                            <Icon 
+                                name={iconName} 
+                                size={24} 
+                                color={focused ? "#6EE7B7" : "#94A3B8"} 
+                            />
+                        </View>
+                    );
                 },
-                tabBarShowLabel: false,
+                tabBarShowLabel: true,
                 tabBarStyle: {
-                    backgroundColor: "#DFF3E3",
+                    ...styles.tabBar,
+                    backgroundColor: "#1E293B",
                     borderTopLeftRadius: 25,
                     borderTopRightRadius: 25,
                     position: "absolute",
-                    height: 70,
+                    height: 75,
                 },
-                headerRight: () => (
-                    <TouchableOpacity style={{ marginRight: 15 }} onPress={() => navigation.navigate("Notifications")}>
-                        <Icon name="bell" size={24} color="black" />
-                    </TouchableOpacity>
-                ),
+                tabBarLabelStyle: styles.tabBarLabel,
+                tabBarActiveTintColor: "#6EE7B7",
+                tabBarInactiveTintColor: "#94A3B8",
+                
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} options={screenOptionsWithNotification} />
@@ -121,3 +157,78 @@ export default function App() {
         </NavigationContainer>
     );
 }
+
+const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#0F172A",
+    },
+    loadingText: {
+        color: "#94A3B8",
+        marginTop: 16,
+        fontSize: 16,
+    },
+    tabBar: {
+        backgroundColor: "#1E293B",
+        borderTopWidth: 0,
+        height: 84,
+        paddingBottom: 24,
+        paddingTop: 12,
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        shadowColor: "#6EE7B7",
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+    },
+    tabIconWrapper: {
+        width: 48,
+        height: 48,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 24,
+    },
+    tabIconActive: {
+        backgroundColor:"rgba(110, 231, 183, 0.66)",
+    },
+    tabBarLabel: {
+        fontSize: 12,
+        fontWeight: '500',
+        marginTop: 7,
+    },
+    header: {
+        backgroundColor: "#0F172A",
+        height: 70,
+    },
+    headerLeft: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginLeft: 16,
+    },
+    headerTitle: {
+        color: "#F8FAFC",
+        fontSize: 20,
+        fontWeight: "600",
+        marginLeft: 12,
+    },
+    notificationBtn: {
+        marginRight: 16,
+        padding: 8,
+    },
+    notificationIconContainer: {
+        position: "relative",
+    },
+    notificationBadge: {
+        position: "absolute",
+        right: -2,
+        top: -2,
+        backgroundColor: "#FB7185",
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: "#0F172A",
+    }
+});
