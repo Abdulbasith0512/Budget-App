@@ -12,14 +12,14 @@ import {
     Platform,
     KeyboardAvoidingView,
     ScrollView,
-    ActivityIndicator
+    ActivityIndicator,
+    StatusBar
 } from "react-native";
 import { addExpense, categorizeExpense } from "../services/api";
 import { auth } from "../config/firebase";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const { width } = Dimensions.get('window');
-const scale = width / 375;
-const normalize = (size) => Math.round(scale * size);
+
 
 export default function AddExpenseScreen({ navigation }) {
     const [description, setDescription] = useState("");
@@ -145,7 +145,7 @@ export default function AddExpenseScreen({ navigation }) {
                                 value={description}
                                 onChangeText={setDescription}
                                 placeholder="What's this for?"
-                                placeholderTextColor="#999"
+                                placeholderTextColor="#666"  
                             />
                         </View>
 
@@ -179,36 +179,40 @@ export default function AddExpenseScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
-        
+        backgroundColor: '#0F172A',
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
     keyboardView: {
         flex: 1,
     },
     scrollContent: {
         flexGrow: 1,
-        padding: normalize(20),
+        paddingHorizontal: wp('4%'),
+        paddingBottom: hp('12%'), // Added padding for bottom navigation
     },
     header: {
-        marginBottom: normalize(30),
+        marginTop: hp('2%'),
+        marginBottom: hp('4%'),
     },
     headerTitle: {
-        fontSize: normalize(24),
+        fontSize: wp('7%'),
         fontWeight: '600',
-        color: '#333',
-        marginBottom: normalize(8),
+        color: '#94A3B8',
+        marginBottom: hp('1%'),
     },
     headerSubtitle: {
-        fontSize: normalize(16),
-        color: '#666',
+        fontSize: wp('4%'),
+        color: '#94A3B8',
     },
     card: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: normalize(20),
-        padding: normalize(20),
+        backgroundColor: '#1E293B',
+        borderRadius: wp('5%'),
+        padding: wp('5%'),
+        width: wp('92%'),
+        alignSelf: 'center',
         ...Platform.select({
             ios: {
-                shadowColor: '#000',
+                shadowColor: '#6EE7B7',
                 shadowOffset: {
                     width: 0,
                     height: 2,
@@ -223,16 +227,16 @@ const styles = StyleSheet.create({
     },
     switchContainer: {
         flexDirection: 'row',
-        backgroundColor: '#F0F0F0',
-        borderRadius: normalize(12),
-        padding: normalize(4),
-        marginBottom: normalize(20),
+        backgroundColor: '#94A3B8',
+        borderRadius: wp('3%'),
+        padding: wp('1%'),
+        marginBottom: hp('3%'),
     },
     switchButton: {
         flex: 1,
-        paddingVertical: normalize(12),
+        paddingVertical: hp('1.5%'),
         alignItems: 'center',
-        borderRadius: normalize(10),
+        borderRadius: wp('2.5%'),
     },
     switchButtonActive: {
         backgroundColor: '#FFFFFF',
@@ -252,7 +256,7 @@ const styles = StyleSheet.create({
         }),
     },
     switchText: {
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         color: '#666',
         fontWeight: '500',
     },
@@ -264,55 +268,55 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: normalize(30),
+        marginBottom: hp('4%'),
     },
     currencySymbol: {
-        fontSize: normalize(36),
-        color: '#333',
-        marginRight: normalize(8),
+        fontSize: wp('10%'),
+        color: '#94A3B8',
+        marginRight: wp('2%'),
     },
     amountInput: {
-        fontSize: normalize(36),
-        color: '#333',
-        minWidth: normalize(150),
+        fontSize: wp('10%'),
+        color: '#999',
+        minWidth: wp('40%'),
         textAlign: 'center',
     },
     inputGroup: {
-        marginBottom: normalize(20),
+        marginBottom: hp('3%'),
     },
     label: {
-        fontSize: normalize(14),
-        color: '#666',
-        marginBottom: normalize(8),
+        fontSize: wp('4%'),
+        color: '#94A3B8',
+        marginBottom: hp('1%'),
     },
     input: {
-        backgroundColor: '#F8F9FA',
-        borderRadius: normalize(12),
-        padding: normalize(16),
-        fontSize: normalize(16),
-        color: '#333',
+        backgroundColor: '#94A3B8',
+        borderRadius: wp('3%'),
+        padding: wp('4%'),
+        fontSize: wp('4%'),
+        color: '#F8FAFC',
     },
     categoryButton: {
-        backgroundColor: '#F8F9FA',
-        borderRadius: normalize(12),
-        padding: normalize(16),
+        backgroundColor: '#94A3B8',
+        borderRadius: wp('3%'),
+        padding: wp('4%'),
         alignItems: 'center',
-        marginBottom: normalize(20),
+        marginBottom: hp('3%'),
     },
     categoryButtonText: {
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         color: '#666',
         fontWeight: '500',
     },
     submitButton: {
-        borderRadius: normalize(12),
-        padding: normalize(16),
+        borderRadius: wp('3%'),
+        padding: wp('4%'),
         alignItems: 'center',
-        marginTop: normalize(10),
+        marginTop: hp('1.5%'),
     },
     submitButtonText: {
         color: '#FFFFFF',
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         fontWeight: '600',
     },
     loadingContainer: {
@@ -321,8 +325,42 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     loadingText: {
-        marginTop: normalize(12),
-        fontSize: normalize(16),
+        marginTop: hp('2%'),
+        fontSize: wp('4%'),
         color: '#666',
+    },
+});
+
+// Add tablet and desktop styles
+const tabletStyles = StyleSheet.create({
+    '@media (min-width: 768px)': {
+        card: {
+            width: wp('80%'),
+            maxWidth: 600,
+        },
+        headerTitle: {
+            fontSize: wp('5%'),
+        },
+        headerSubtitle: {
+            fontSize: wp('3%'),
+        },
+        amountInput: {
+            fontSize: wp('8%'),
+        },
+        currencySymbol: {
+            fontSize: wp('8%'),
+        },
+    },
+    '@media (min-width: 1024px)': {
+        card: {
+            width: wp('70%'),
+            maxWidth: 800,
+        },
+        amountInput: {
+            fontSize: wp('6%'),
+        },
+        currencySymbol: {
+            fontSize: wp('6%'),
+        },
     },
 });

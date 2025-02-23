@@ -12,6 +12,7 @@ import {
     Platform 
 } from "react-native";
 import { fetchExpenses } from "../services/api";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const { width } = Dimensions.get('window');
 const scale = width / 375;
@@ -192,89 +193,89 @@ const styles = StyleSheet.create({
     },
     balanceContainer: {
         backgroundColor: '#00B386',
-        padding: normalize(20),
-        borderBottomLeftRadius: normalize(25),
-        borderBottomRightRadius: normalize(25),
+        padding: wp('5%'),
+        borderBottomLeftRadius: wp('6%'),
+        borderBottomRightRadius: wp('6%'),
     },
     balanceLabel: {
         color: '#E0FFF7',
-        fontSize: normalize(14),
-        marginBottom: normalize(8),
+        fontSize: wp('3.5%'),
+        marginBottom: hp('1%'),
     },
     balanceRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: normalize(20),
+        marginBottom: hp('2.5%'),
     },
     balanceAmount: {
         color: '#FFFFFF',
-        fontSize: normalize(28),
+        fontSize: wp('7%'),
         fontWeight: '600',
     },
     progressBarContainer: {
-        height: normalize(8),
+        height: hp('1%'),
         backgroundColor: '#052224',
-        borderRadius: normalize(4),
-        marginBottom: normalize(20),
+        borderRadius: wp('1%'),
+        marginBottom: hp('2.5%'),
     },
     progressBar: {
         height: '100%',
         backgroundColor: '#FFFFFF',
-        borderRadius: normalize(4),
+        borderRadius: wp('1%'),
     },
     summaryContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: normalize(10),
+        marginTop: hp('1.2%'),
     },
     summaryCard: {
         backgroundColor: '#FFFFFF',
-        padding: normalize(15),
-        borderRadius: normalize(15),
+        padding: wp('4%'),
+        borderRadius: wp('4%'),
         width: '48%',
     },
     summaryLabel: {
         color: '#666',
-        fontSize: normalize(14),
-        marginBottom: normalize(5),
+        fontSize: wp('3.5%'),
+        marginBottom: hp('0.6%'),
     },
     summaryAmount: {
         color: '#00B386',
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         fontWeight: '600',
     },
     summaryExpense: {
         color: '#FF6B6B',
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         fontWeight: '600',
     },
     transactionsContainer: {
         flex: 1,
-        padding: normalize(20),
+        padding: wp('5%'),
     },
     transactionsHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: normalize(15),
+        marginBottom: hp('2%'),
     },
     transactionsTitle: {
-        fontSize: normalize(18),
+        fontSize: wp('4.5%'),
         fontWeight: '600',
         color: '#333',
     },
     seeAll: {
         color: '#00B386',
-        fontSize: normalize(14),
+        fontSize: wp('3.5%'),
     },
     transactionCard: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
-        padding: normalize(15),
-        borderRadius: normalize(15),
-        marginBottom: normalize(10),
+        padding: wp('4%'),
+        borderRadius: wp('4%'),
+        marginBottom: hp('1.2%'),
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
@@ -289,13 +290,13 @@ const styles = StyleSheet.create({
     },
     iconContainer: {
         backgroundColor: '#F0F6FF',
-        padding: normalize(10),
-        borderRadius: normalize(12),
-        marginRight: normalize(15),
+        padding: wp('2.5%'),
+        borderRadius: wp('3%'),
+        marginRight: wp('4%'),
     },
     icon: {
-        width: normalize(24),
-        height: normalize(24),
+        width: wp('6%'),
+        height: wp('6%'),
     },
     transactionDetails: {
         flex: 1,
@@ -304,10 +305,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: normalize(5),
+        marginBottom: hp('0.6%'),
+    },
+    description: {
+        fontSize: wp('4%'),
+        fontWeight: '500',
+        color: '#333',
+        flex: 1,
+        marginRight: wp('2%'),
     },
     transactionTitle: {
-        fontSize: normalize(12),
+        fontSize: wp('3%'),
         fontWeight: '500',
         color: '#666',
     },
@@ -316,7 +324,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     amount: {
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         fontWeight: '600',
     },
     income: {
@@ -327,11 +335,7 @@ const styles = StyleSheet.create({
     },
     date: {
         color: '#666',
-        fontSize: normalize(14),
-    },
-    frequency: {
-        color: '#666',
-        fontSize: normalize(14),
+        fontSize: wp('3.5%'),
     },
     loadingContainer: {
         flex: 1,
@@ -342,29 +346,58 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: normalize(20),
+        padding: wp('5%'),
     },
     errorText: {
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         color: '#FF6B6B',
-        marginBottom: normalize(16),
+        marginBottom: hp('2%'),
         textAlign: 'center',
     },
     retryButton: {
         backgroundColor: '#00B386',
-        paddingVertical: normalize(12),
-        paddingHorizontal: normalize(24),
-        borderRadius: normalize(8),
+        paddingVertical: hp('1.5%'),
+        paddingHorizontal: wp('6%'),
+        borderRadius: wp('2%'),
     },
     retryText: {
         color: '#FFFFFF',
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         fontWeight: '600',
     },
     emptyText: {
         textAlign: 'center',
-        fontSize: normalize(16),
+        fontSize: wp('4%'),
         color: '#666',
-        marginTop: normalize(24),
+        marginTop: hp('3%'),
+    },
+    '@media (min-width: 768px)': {
+        balanceAmount: {
+            fontSize: wp('6%'),
+        },
+        summaryCard: {
+            padding: wp('3%'),
+        },
+        transactionCard: {
+            maxWidth: wp('80%'),
+            alignSelf: 'center',
+        },
+        icon: {
+            width: wp('5%'),
+            height: wp('5%'),
+        },
+    },
+    '@media (min-width: 1024px)': {
+        balanceContainer: {
+            maxWidth: wp('80%'),
+            alignSelf: 'center',
+        },
+        transactionCard: {
+            maxWidth: wp('70%'),
+        },
+        summaryContainer: {
+            maxWidth: wp('80%'),
+            alignSelf: 'center',
+        },
     },
 });
