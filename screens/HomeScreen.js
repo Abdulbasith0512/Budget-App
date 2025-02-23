@@ -38,8 +38,6 @@ export default function HomeScreen({ navigation }) {
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
                 <CardComponents />
-                
-                
             </View>
         </SafeAreaView>
     );
@@ -48,7 +46,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#151729',
         marginBottom: hp('4%'), // Adjusted for bottom navigation
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
@@ -124,7 +122,3 @@ const styles = StyleSheet.create({
     },
 });
 
-// Add tablet and desktop styles
-const tabletStyles = StyleSheet.create({
-    
-});

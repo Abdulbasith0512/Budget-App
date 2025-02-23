@@ -114,7 +114,7 @@ export default function AIChatScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
         <Text style={styles.title}>Hello, Ask Me{"\n"}Financial Advice...</Text>
@@ -182,7 +182,7 @@ export default function AIChatScreen() {
             source={{
               uri: "https://img.icons8.com/material-outlined/24/microphone.png",
             }}
-            style={{ width: 24, height: 24 }}
+            style={{ width: 24, height: 24 ,tintColor: "#94A3B8"}}
           />
         </TouchableOpacity>
 
@@ -191,7 +191,7 @@ export default function AIChatScreen() {
           value={input}
           onChangeText={setInput}
           placeholder="Ask me financial advice..."
-          placeholderTextColor="#999"
+          placeholderTextColor="#94A3B8"
         />
 
         <TouchableOpacity
@@ -200,7 +200,7 @@ export default function AIChatScreen() {
         >
           <Image
             source={{ uri: "https://img.icons8.com/ios-filled/50/sent.png" }}
-            style={{ width: 24, height: 24 }}
+            style={{ width: 24, height: 24,tintColor: "#6EE7B7" }}
           />
         </TouchableOpacity>
       </View>
@@ -210,19 +210,19 @@ export default function AIChatScreen() {
 
 const markdownStyles = {
   body: {
-      color: '#333',
+      color: '#F8FAFC',
       fontSize: wp('4%'),
       flex: 1,
   },
   heading1: {
       fontSize: wp('6%'),
-      color: '#1976D2',
+      color: '#6EE7B7',
       fontWeight: 'bold',
       marginVertical: hp('1.5%'),
   },
   heading2: {
       fontSize: wp('5%'),
-      color: '#1976D2',
+      color: '#6EE7B7',
       fontWeight: 'bold',
       marginVertical: hp('1%'),
   },
@@ -240,16 +240,16 @@ const markdownStyles = {
   },
   listUnorderedItemIcon: {
       fontSize: wp('4%'),
-      color: '#1976D2',
+      color: '#6EE7B7',
   },
   code_inline: {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#1E293B',
       padding: wp('1%'),
       borderRadius: wp('1%'),
       fontFamily: 'monospace',
   },
   code_block: {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#1E293B',
       padding: wp('2.5%'),
       borderRadius: wp('2%'),
       fontFamily: 'monospace',
@@ -257,7 +257,7 @@ const markdownStyles = {
   },
   blockquote: {
       borderLeftWidth: 4,
-      borderLeftColor: '#1976D2',
+      borderLeftColor: '#6EE7B7',
       paddingLeft: wp('2.5%'),
       marginLeft: wp('2.5%'),
       marginVertical: hp('1%'),
@@ -267,7 +267,7 @@ const markdownStyles = {
 const styles = StyleSheet.create({
   container: {
       flex: 1,
-      backgroundColor: '#F0F8FF',
+      backgroundColor: '#0F172A',
       paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       paddingBottom: isIphoneX() ? 34 : 0,
   },
@@ -289,10 +289,10 @@ const styles = StyleSheet.create({
       fontSize: wp('7%'),
       fontWeight: 'bold',
       marginBottom: hp('1%'),
-      color: '#1976D2',
+      color: '#F8FAFC',
   },
   subtitle: {
-      color: '#666',
+      color: '#94A3B8',
       fontSize: wp('3%'),
   },
   suggestionsContainer: {
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   suggestionButton: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: 'white',
+      backgroundColor: '#1E293B',
       padding: wp('4%'),
       borderRadius: wp('5%'),
       shadowColor: '#000',
@@ -317,39 +317,44 @@ const styles = StyleSheet.create({
   suggestionIcon: {
       marginRight: wp('2%'),
       fontSize: wp('4%'),
+      color: "#6EE7B7",
   },
   suggestionText: {
       fontSize: wp('4%'),
-      color: '#333',
+      color: '#F8FAFC',
   },
   messageContainer: {
       marginVertical: hp('1%'),
       marginHorizontal: wp('2%'),
-      maxWidth: wp('80%'),
+      maxWidth: wp('85%'), // Increased max width
+    minWidth: wp('50%'), // Added minimum width
   },
   questionContainer: {
-      backgroundColor: '#E3F2FD',
+      backgroundColor: '#1E293B',
       padding: wp('4%'),
       borderRadius: wp('4%'),
       alignSelf: 'flex-end',
   },
   responseContainer: {
-      backgroundColor: 'white',
-      padding: wp('4%'),
-      borderRadius: wp('4%'),
-      alignSelf: 'flex-start',
-      shadowColor: '#000',
-      shadowOffset: {
-          width: 0,
-          height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
+    backgroundColor: '#1E293B',
+    padding: wp('4%'),
+    borderRadius: wp('4%'),
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    flexWrap: 'wrap', // Allow content to wrap
+    flex: 1, // Take available space
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   questionText: {
       fontSize: wp('4%'),
-      color: '#1976D2',
+      color: '#6EE7B7',
       fontWeight: '500',
   },
   responseScroll: {
@@ -363,7 +368,7 @@ const styles = StyleSheet.create({
     right: wp('4%'),
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#1E293B',
     padding: wp('3%'),
     borderRadius: wp('6%'),
     shadowColor: '#000',
@@ -380,13 +385,14 @@ const styles = StyleSheet.create({
       flex: 1,
       fontSize: wp('4%'),
       marginHorizontal: wp('2%'),
-      color: '#333',
+      color: '#F8FAFC',
   },
   iconButton: {
       padding: wp('2%'),
   },
   sendButton: {
       padding: wp('2%'),
+
   },
   loadingContainer: {
       flex: 1,
@@ -402,11 +408,7 @@ const styles = StyleSheet.create({
   bottomPadding: {
     height: hp('15%'), 
 },
-});
-
-
-const tabletStyles = StyleSheet.create({
-  '@media (min-width: 768px)': {
+'@media (min-width: 768px)': {
       container: {
           maxWidth: wp('80%'),
           alignSelf: 'center',
@@ -436,3 +438,4 @@ const tabletStyles = StyleSheet.create({
     },
   },
 });
+
