@@ -12,7 +12,7 @@ import ExpensesScreen from "./screens/ExpensesScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import AIChatScreen from "./screens/AIChatScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-
+import SplashScreen from './screens/SplashScreen';
 import NotificationsScreen from "./screens/NotificationsScreen"; 
 
 import LoginScreen from "./screens/LoginScreen";
@@ -158,6 +158,7 @@ export default function App() {
                 cardStyle: { backgroundColor: '#0F172A' },
             }}
         >
+           
             {user ? (
                 <>
                     <Stack.Screen 

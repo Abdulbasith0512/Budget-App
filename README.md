@@ -21,7 +21,7 @@
 
 ---
 
-## **🛠️ Tech Stack**
+## **🛠️ Tech Stack** 
 | **Category**  | **Technology** |
 |--------------|--------------|
 | 🌐 **Frontend** | React Native, Expo |
