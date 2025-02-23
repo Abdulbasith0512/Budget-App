@@ -1,6 +1,6 @@
 # 🎨 Nutshell Frontend – Your AI-Powered Budgeting App
 
-![Nutshell Logo](https://raw.githubusercontent.com/blamex321/BudgetingForAll-ui/main/assets/logo.png)
+![Nutshell Logo](https://github.com/blamex321/BudgetingForAll-ui/blob/blamex321-patch-1/screenshots/logo.png)
 
 **Nutshell** is an **AI-powered budgeting and expense tracking app**, designed with **React Native and Expo** to help users take control of their finances. 
 
@@ -60,11 +60,11 @@ npx expo start
 ## **📲 Screenshots**
 | Home | Expenses | AI Chat |
 |------|---------|--------|
-| ![Home](https://via.placeholder.com/300x600) | ![Expenses](https://via.placeholder.com/300x600) | ![AI Chat](https://via.placeholder.com/300x600) |
+| ![Home](https://github.com/blamex321/BudgetingForAll-ui/blob/blamex321-patch-1/screenshots/home-screen.jpeg) | ![Expenses](https://github.com/blamex321/BudgetingForAll-ui/blob/blamex321-patch-1/screenshots/expenses.jpeg) | ![AI Chat](https://github.com/blamex321/BudgetingForAll-ui/blob/blamex321-patch-1/screenshots/ai-chat.jpeg) |
 
 | FIRE Dashboard | FIRE Insights |
 |---------------|--------------|
-| ![FIRE Dashboard](https://via.placeholder.com/300x600) | ![FIRE Insights](https://via.placeholder.com/300x600) |
+| ![FIRE Dashboard](https://github.com/blamex321/BudgetingForAll-ui/blob/blamex321-patch-1/screenshots/Fire-planner.jpeg) | ![Expense Tracker](https://github.com/blamex321/BudgetingForAll-ui/blob/blamex321-patch-1/screenshots/add-or-remove.jpeg) |
 
 ---
 
