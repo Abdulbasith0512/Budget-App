@@ -4,13 +4,6 @@
 
 **Nutshell** is an **AI-powered budgeting and expense tracking app**, designed with **React Native and Expo** to help users take control of their finances. 
 
-🚀 Built for **DUHacks 4.0**  
-🔗 Backend Repo: [BudgetingForAll-backend](https://github.com/blamex321/BudgetingForAll-backend)  
-
-![Hackathon](https://img.shields.io/badge/Hackathon-DUHacks%204.0-purple)
-![Status](https://img.shields.io/badge/Status-In%20Progress-orange)
-
----
 
 ## **📈 Features**
 ✅ **AI-Powered Expense Categorization** using **GPT-4o**  
@@ -91,17 +84,7 @@ POST /api/ai/categorize
 }
 ```
 
----
 
-## **👥 Team**
-- **Laxman Bankupalle** – Frontend Lead 💻  
-- **Sai Prakash** – Full Stack Developer 🤖  
-- **Reethu Bhargavi** – UI/UX Designer 🎨  
-- **Hareesh Beecha** – Backend Specialist 🛠️  
-
-📚 **Hackathon Submission Link**: [TBD]  
-
----
 
 ## **🙏 Contributing**
 💪 Want to improve Nutshell?  
@@ -114,11 +97,9 @@ POST /api/ai/categorize
 ---
 
 ## **📩 Contact**
-👤 **Laxman Bankupalle**  
-📧 [laxman.bankupalle@gmail.com](mailto:laxman.bankupalle@gmail.com)  
-💼 LinkedIn: [Laxman Bankupalle](https://www.linkedin.com/in/laxman-bankupalle/)  
+👤 **Abdul Basith**  
+📧 [basithsd12@gmail.com](mailto:basithsd12@gmail.com)  
+💼 LinkedIn: [Abdul Basith](https://www.linkedin.com/in/abdul-basith-5616282ab)  
 
----
 
-🚀 **Made for DUHacks 4.0!** Give us a ⭐ if you like it! 😊🔥
 
