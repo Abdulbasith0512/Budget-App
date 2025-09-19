@@ -25,7 +25,7 @@
 ## **🚀 Setup & Installation**
 ### **1️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/blamex321/BudgetingForAll-ui.git
+git clone https://github.com/Abdulbasith0512/Budget-App-ui.git
 cd BudgetingForAll-ui
 ```
 
