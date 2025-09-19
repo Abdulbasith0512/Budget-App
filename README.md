@@ -1,7 +1,5 @@
 # 🎨 Nutshell Frontend – Your AI-Powered Budgeting App
 
-![Nutshell Logo](https://github.com/blamex321/BudgetingForAll-ui/blob/blamex321-patch-1/screenshots/logo.png)
-
 **Nutshell** is an **AI-powered budgeting and expense tracking app**, designed with **React Native and Expo** to help users take control of their finances. 
 
 
